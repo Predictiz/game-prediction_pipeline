@@ -9,7 +9,7 @@ def main():
     db = DB_Access(year)
 
     df = load_games_data(db,year)
-    print(df)
+    
 
     # y = df.pop('win')
     home_names = df.pop('home_name')
@@ -66,11 +66,15 @@ def main():
         # print(res[0], res[1], res[2])
     final['home_name'] = home_names
     final['visitor_name'] = visitor_names
+    final['home_odd'] = home_odd
+    final['visitor_odd'] = visitor_odd
+    final['home_win_probability'] = e
     print(final)
+    final.to_csv("predictions.csv",sep=';')
 
 
 
-def predict_from_model(model, data):
+def predict_from_model(model, data, index=False):
     result = model.predict(data) 
     return result
 
