@@ -9,13 +9,14 @@ def main():
     db = DB_Access(year)
 
     df = load_games_data(db,year)
-    
+    print("here")
 
     # y = df.pop('win')
     home_names = df.pop('home_name')
     visitor_names = df.pop('visitor_name')
     home_odd = df.pop('home_odd')
     visitor_odd = df.pop('visitor_odd')
+    game_csk = df.pop('csk')
     X = df
 
     bin_path = str(7)
@@ -64,6 +65,7 @@ def main():
         game_pred['no_bet'] = res[2]
         final = final.append(game_pred, ignore_index=True)
         # print(res[0], res[1], res[2])
+    final['csk'] = game_csk
     final['home_name'] = home_names
     final['visitor_name'] = visitor_names
     final['home_odd'] = home_odd
@@ -71,6 +73,8 @@ def main():
     final['home_win_probability'] = e
     print(final)
     final.to_csv("predictions.csv",sep=';')
+    for index, game in final.itterows():
+        db.save_to_db(game)
 
 
 
@@ -83,6 +87,7 @@ def predict_from_model(model, data, index=False):
 def load_games_data(db, year):
     print("getting games")
     games = db.get_games_not_played()
+    print(games)
     indice = 0
     data = {}
     for game in games:
@@ -115,6 +120,7 @@ def load_games_data(db, year):
                 
                 #Ecriture des entêtes
                 if(indice == 0):
+                    data['csk'] = []
                     data['home_elo_probability'] = []
                     data['home_name'] = []
                     data['visitor_name'] = []
@@ -136,6 +142,7 @@ def load_games_data(db, year):
 
                     
                 # Ecriture des données
+                data['csk'].append(game['csk'])
                 data['home_elo_probability'].append(game['home_win_probability'])
                 data['home_name'].append(home_team['name'])
                 data['visitor_name'].append(visitor_team['name'])       

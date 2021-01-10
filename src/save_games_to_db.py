@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import os
 import time
+import datetime
 
 
 class AtlasDB:
@@ -16,6 +17,7 @@ class AtlasDB:
         self.table_player = db["player"]
         self.table_game = db["game"]
         self.table_player_stats = db["playerStats"]
+        self.table_history = db["prediction_history"]
         print("Atlas MongoDB connected")
 
     def add_team(self, team):
@@ -29,6 +31,7 @@ class AtlasDB:
         existing_game = self.table_game.find_one({"csk": game["csk"]})
         # Insert in Games
         if(existing_game is not None):
+            stats = self.table_history.find_one({"ide":"games_2021"})
             try:
                 game["home_odd"] = existing_game["home_odd"]
                 game["visitor_odd"] = existing_game["visitor_odd"]
@@ -36,6 +39,47 @@ class AtlasDB:
                 print("no odd for this game")
                 game["home_odd"] = 1
                 game["visitor_odd"] = 1
+            try: 
+                home_win = existing_game['home_win_bet']
+                no_bet = existing_game['no_bet']
+                visitor_win = existing_game['visitor_win']
+                balance = 0
+                games_predicted = 0
+                games_misspredicted = 0
+                if(stats != None):
+                    balance = stats["balance"]
+                    games_predicted = stats["games_predicted"]
+                    games_misspredicted = stats["games_misspredicted"]
+                if(home_win > 0.95):
+                        balance += -10
+                        if(game['winner'] == 1):
+                            balance += 10 * game["home_odd"]
+                            games_predicted += 1
+                        else:
+                            games_misspredicted += 1
+                if(visitor_win > 0.95):
+                        balance += -10
+                        if(game['winner'] == 0):
+                            balance += 10 * game["home_odd"]
+                            games_predicted += 1
+                        else:
+                            games_misspredicted +=1
+                if(stats ==None):
+                    self.table_history.insert_one({
+                        "balance":balance,
+                        "games_predicted":games_predicted,
+                        "games_misspredicted":games_misspredicted,
+                        "ide":"games_2021"
+                    })
+                else:
+                    self.table_history.update_one({"ide":"games_2021"},
+                    {
+                        "balance":balance,
+                        "games_predicted":games_predicted,
+                        "games_misspredicted":games_misspredicted,
+                    })
+
+
             self.table_game.delete_one({"csk": game["csk"]})
 
         if (visitor is not None) & (home is not None):

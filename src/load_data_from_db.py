@@ -6,13 +6,30 @@ class DB_Access:
     def __init__(self, year):
         self.client = MongoClient(os.environ["PREDICTIZ_CREDENTIALS"])
         dblist = self.client.list_database_names()
-       
         db = self.client["season_" + year]
         self.table_team = db["team"]
         self.table_player = db["player"]
         self.table_game = db["game"]
         self.table_player_stats = db["playerStats"]
+        self.table_history = db["prediction_history"]
         print("Atlas MongoDB connected")
+
+
+    def save_to_db(self,game):
+        existing_game = self.table_game.find_one({"csk": game["csk"]})
+        # Insert in Games
+        if(existing_game is not None):
+            self.table_game.update_one({"csk": game["csk"]},
+             {
+                 "home_win_bet":game["home_win"], 
+                 "visitor_win_bet": game["visitor_win"],
+                 "no_bet": game['no_bet'],
+                 "home_name" : game['home_name'],
+                 "visitor_name": game["visitor_name"],
+                 "home_win_probability": game["home_win_probability"]
+             })
+
+
 
 
     def get_games_not_played(self):
