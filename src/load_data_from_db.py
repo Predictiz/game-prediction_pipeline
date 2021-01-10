@@ -21,12 +21,14 @@ class DB_Access:
         if(existing_game is not None):
             self.table_game.update_one({"csk": game["csk"]},
              {
+                 "$set":{
                  "home_win_bet":game["home_win"], 
                  "visitor_win_bet": game["visitor_win"],
                  "no_bet": game['no_bet'],
                  "home_name" : game['home_name'],
                  "visitor_name": game["visitor_name"],
                  "home_win_probability": game["home_win_probability"]
+                 }
              })
 
 

@@ -64,7 +64,7 @@ class AtlasDB:
                             games_predicted += 1
                         else:
                             games_misspredicted +=1
-                if(stats ==None):
+                if(stats == None):
                     self.table_history.insert_one({
                         "balance":balance,
                         "games_predicted":games_predicted,
@@ -74,15 +74,19 @@ class AtlasDB:
                 else:
                     self.table_history.update_one({"ide":"games_2021"},
                     {
-                        "balance":balance,
-                        "games_predicted":games_predicted,
-                        "games_misspredicted":games_misspredicted,
+                        "$set":{
+                            "balance":balance,
+                            "games_predicted":games_predicted,
+                            "games_misspredicted":games_misspredicted,
+                        }
                     })
+            except Exception:
+                print("this game was not predicted")
 
 
             self.table_game.delete_one({"csk": game["csk"]})
 
-        if (visitor is not None) & (home is not None):
+        if(visitor is not None) & (home is not None):
             game["visitor_id"] = visitor["_id"]
             game["home_id"] = home["_id"]
             retour = self.table_game.insert_one(game)
@@ -90,6 +94,7 @@ class AtlasDB:
             # Update GamesIds in team
             self.table_team.update_one({"nick": game["visitor_nick"]}, {"$push": {"gameIds": retour.inserted_id}})
             self.table_team.update_one({"nick": game["home_nick"]}, {"$push": {"gameIds": retour.inserted_id}})
+
 
     def add_player(self, name):
         exist = self.table_player.find_one({"name": name})

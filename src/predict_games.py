@@ -73,7 +73,7 @@ def main():
     final['home_win_probability'] = e
     print(final)
     final.to_csv("predictions.csv",sep=';')
-    for index, game in final.itterows():
+    for index, game in final.iterrows():
         db.save_to_db(game)
 
 
@@ -87,7 +87,6 @@ def predict_from_model(model, data, index=False):
 def load_games_data(db, year):
     print("getting games")
     games = db.get_games_not_played()
-    print(games)
     indice = 0
     data = {}
     for game in games:
