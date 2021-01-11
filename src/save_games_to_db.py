@@ -81,7 +81,7 @@ class AtlasDB:
                         }
                     })
             except Exception:
-                print("this game was not predicted")
+                print(Exception, "this game was not predicted")
 
 
             self.table_game.delete_one({"csk": game["csk"]})
