@@ -75,6 +75,7 @@ def main():
     final.to_csv("predictions.csv",sep=';')
     for index, game in final.iterrows():
         db.save_to_db(game)
+        print(game)
 
 
 

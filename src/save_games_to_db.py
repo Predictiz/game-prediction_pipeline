@@ -42,7 +42,7 @@ class AtlasDB:
             try: 
                 home_win = existing_game['home_win_bet']
                 no_bet = existing_game['no_bet']
-                visitor_win = existing_game['visitor_win']
+                visitor_win = existing_game['visitor_win_bet']
                 balance = 0
                 games_predicted = 0
                 games_misspredicted = 0
