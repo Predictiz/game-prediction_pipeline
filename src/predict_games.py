@@ -19,7 +19,7 @@ def main():
     game_csk = df.pop('csk')
     X = df
 
-    bin_path = str(7)
+    bin_path = str(8)
     ##LOADING MODELS
     k_near = pickle.load(open("model/"+bin_path+"/k-nearest.model", 'rb'))
     l_regression = pickle.load(open("model/"+bin_path+"/logisitic-regression.model", 'rb'))
@@ -27,7 +27,7 @@ def main():
     svm = pickle.load(open("model/"+bin_path+"/svm.model", 'rb'))
     n_network = load_model("model/"+bin_path+"/neural-network.h5")
 
-    n_network_bet = load_model("model/betting_1/odds_loss2.h5", compile=False)
+    n_network_bet = load_model("model/betting_8/odds_loss.h5", compile=False)
    
     
     summ = 0
