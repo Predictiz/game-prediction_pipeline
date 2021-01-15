@@ -35,6 +35,7 @@ class AtlasDB:
             try:
                 game["home_odd"] = existing_game["home_odd"]
                 game["visitor_odd"] = existing_game["visitor_odd"]
+                print("")
             except Exception:
                 print("no odd for this game")
                 game["home_odd"] = 1
@@ -43,6 +44,9 @@ class AtlasDB:
                 home_win = existing_game['home_win_bet']
                 no_bet = existing_game['no_bet']
                 visitor_win = existing_game['visitor_win_bet']
+                game['home_win_bet'] = home_win
+                game['no_bet'] = no_bet
+                game['visitor_win_bet'] = visitor_win
                 balance = 0
                 games_predicted = 0
                 games_misspredicted = 0
@@ -50,20 +54,32 @@ class AtlasDB:
                     balance = stats["balance"]
                     games_predicted = stats["games_predicted"]
                     games_misspredicted = stats["games_misspredicted"]
+
                 if(home_win > 0.5):
-                        balance += -10
+                        game['earned'] = -10
                         if(game['winner'] == 1):
                             balance += 10 * game["home_odd"]
                             games_predicted += 1
+                            game['earned'] += 10 * game["home_odd"]
                         else:
                             games_misspredicted += 1
-                if(visitor_win > 0.5):
                         balance += -10
+                        game['betted'] = True
+
+                elif(visitor_win > 0.5):
+                        game['earned'] = -10
                         if(game['winner'] == 0):
-                            balance += 10 * game["home_odd"]
+                            balance += 10 * game["visitor_odd"]
                             games_predicted += 1
+                            game['earned'] += 10 * game["visitor_odd"]
                         else:
                             games_misspredicted +=1
+                        balance += -10
+                        game['betted'] = True
+
+                else:
+                    game['betted'] = False
+                    game['earned'] = 0
                 if(stats == None):
                     self.table_history.insert_one({
                         "balance":balance,
@@ -89,6 +105,8 @@ class AtlasDB:
         if(visitor is not None) & (home is not None):
             game["visitor_id"] = visitor["_id"]
             game["home_id"] = home["_id"]
+            game["home_name"] = home["name"]
+            game["visitor_name"] = visitor["name"]
             retour = self.table_game.insert_one(game)
 
             # Update GamesIds in team

@@ -1,6 +1,6 @@
 from load_data_from_db import DB_Access
 import pandas as pd
-import pickle5 as pickle
+import pickle as pickle
 from keras.models import load_model
 import numpy as np
 

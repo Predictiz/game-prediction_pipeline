@@ -70,7 +70,8 @@ class DB_Access:
                             {"home_nick":team_nick},
                             {"visitor_nick":team_nick}
                             ],
-                        "date" : { "$lt" : game_date} 
+                        "date" : { "$lt" : game_date},
+                        "not_played" : False,
                     }
                 
             )
