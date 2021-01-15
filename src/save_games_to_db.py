@@ -64,7 +64,7 @@ class AtlasDB:
                         else:
                             games_misspredicted += 1
                         balance += -10
-                        game['betted'] = True
+                        game['betted'] = 1
 
                 elif(visitor_win > 0.5):
                         game['earned'] = -10
@@ -75,10 +75,10 @@ class AtlasDB:
                         else:
                             games_misspredicted +=1
                         balance += -10
-                        game['betted'] = True
+                        game['betted'] = 0
 
                 else:
-                    game['betted'] = False
+                    game['betted'] = -1
                     game['earned'] = 0
                 if(stats == None):
                     self.table_history.insert_one({
