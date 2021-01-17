@@ -388,8 +388,8 @@ def get_game_odds():
     games_odd = []
     for row in rows:
         game = {
-            "home_odd" :0,
-            "visitor_odd":0,
+            "home_odd" :1,
+            "visitor_odd":1,
         }
         div_home = row.find("span", {"class":"mr-2"})
         if(div_home != None):
@@ -409,7 +409,7 @@ def get_game_odds():
                 if(div_visitor_odd != None):
                     game["visitor_odd"] = float(div_visitor_odd.text)
 
-        if(game['home_odd'] != 0) & (game['visitor_odd'] != 0):
+        if(game['home_odd'] != 1) & (game['visitor_odd'] != 1):
             games_odd.append(game)
 
     req = requests.get("https://www.betclic.fr/basket-ball-s4/nba-c13")
@@ -417,8 +417,8 @@ def get_game_odds():
     betbox = soup.find_all('div', {"class":"betBox"})
     for row in betbox:
         game = {
-                    "home_odd" :0,
-                    "visitor_odd":0,
+                    "home_odd" :1,
+                    "visitor_odd":1,
                     'home_team' : None,
                     'visitor_team' : None,
                 }
@@ -434,7 +434,7 @@ def get_game_odds():
                 game['home_odd'] = float(odds[0].text.replace(',','.'))
                 game['visitor_odd'] = float(odds[1].text.replace(',','.'))
 
-        if(game['home_odd'] != 0) & (game['visitor_odd'] != 0):
+        if(game['home_odd'] != 1) & (game['visitor_odd'] != 1):
             games_odd.append(game)
 
     return games_odd

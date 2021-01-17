@@ -17,6 +17,9 @@ class DB_Access:
 
     def save_to_db(self,game):
         existing_game = self.table_game.find_one({"csk": game["csk"]})
+        if(game['home_odd'] == 1) | (game['visitor_odd'] ==1):
+            game['no_bet'] = 1
+        
         # Insert in Games
         if(existing_game is not None):
             self.table_game.update_one({"csk": game["csk"]},
