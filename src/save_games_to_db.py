@@ -55,7 +55,7 @@ class AtlasDB:
                     games_predicted = stats["games_predicted"]
                     games_misspredicted = stats["games_misspredicted"]
 
-                if(home_win > 0.5):
+                if(home_win > visitor_win) & (home_win > no_bet):
                         game['earned'] = -10.0
                         if(game['winner'] == 1):
                             balance += 10.0 * game["home_odd"]
@@ -66,7 +66,7 @@ class AtlasDB:
                         balance += -10.0
                         game['betted'] = 1
 
-                elif(visitor_win > 0.5):
+                elif(visitor_win > home_win) & (visitor_win > no_bet):
                         game['earned'] = -10.0
                         if(game['winner'] == 0):
                             balance += 10.0 * game["visitor_odd"]
